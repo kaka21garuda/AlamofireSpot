@@ -34,11 +34,12 @@ class ViewController: UITableViewController {
         do {
             var readableJSON = try JSONSerialization.jsonObject(with: JSONData, options: .mutableContainers) as! standardJSON
             if let tracks = readableJSON["tracks"] as? standardJSON {
-                if let items = tracks["items"] as? standardJSON {
+                if let items = tracks["items"] as? [standardJSON]{
                     for i in 0..<items.count {
                         let item = items[i]
-                        let name = item["name"]
+                        let name = item["name"] as! String
                         namesArray.append(name)
+                        tableView.reloadData()
                         
                     }
                 }
@@ -53,6 +54,16 @@ class ViewController: UITableViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return namesArray.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        cell.textLabel?.text = namesArray[indexPath.row]
+        return cell
     }
     
 
